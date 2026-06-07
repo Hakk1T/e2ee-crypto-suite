@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'cok-gizli-siber-anahtar'
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-# --- 1. MERKLE-HELLMAN MOTORU (Server-Side Dosya/Metin İçin) ---
+# --- 1. MERKLE-HELLMAN MOTORU ---
 def egcd(a, b):
     if a == 0: return (b, 0, 1)
     g, y, x = egcd(b % a, a)
@@ -59,7 +59,7 @@ def decrypt_message(cipher_list, private_key):
         decrypted_str += chr(int("".join(binary_bits), 2))
     return decrypted_str
 
-# --- 2. API YOLLARI (Dosya & Metin İşlemleri) ---
+# --- 2. API YOLLARI ---
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -80,7 +80,6 @@ def api_encrypt():
     message = data.get('message')
     pub_key = data.get('public_key')
     
-    # Güvenlik Kontrolü: Veri veya anahtar yoksa işlemi durdur
     if not message or not pub_key:
         return jsonify({'error': 'Eksik metin veya anahtar!'}), 400
         
@@ -92,15 +91,14 @@ def api_decrypt():
     data = request.json
     ciphertext = data.get('ciphertext')
     priv_key = data.get('private_key')
-    
-    # Güvenlik Kontrolü
+
     if not ciphertext or not priv_key:
         return jsonify({'error': 'Eksik şifreli metin veya anahtar!'}), 400
         
     plaintext = decrypt_message(ciphertext, priv_key)
     return jsonify({'plaintext': plaintext})
 
-# --- 3. SOCKET.IO AĞ YÖNLENDİRİCİSİ (Canlı Sohbet İçin) ---
+# --- 3. SOCKET.IO AĞ YÖNLENDİRİCİSİ ---
 @socketio.on('connect')
 def handle_connect():
     print("[AĞ] Yeni cihaz E2EE tüneline katıldı.")
