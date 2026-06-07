@@ -8,7 +8,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
     
     <style>
-        /* --- Temel Tasarım (Glassmorphism) --- */
         body { font-family: 'Inter', sans-serif; background: radial-gradient(circle at top left, #1e293b, #0f172a 100%); color: #f8fafc; margin: 0; padding: 30px; display: flex; justify-content: center; min-height: 100vh; box-sizing: border-box; }
         .container { background: rgba(30, 41, 59, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); padding: 30px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.05); width: 100%; max-width: 1000px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); }
         
@@ -43,7 +42,7 @@
         .badge-danger { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
         .badge-safe { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
 
-        /* --- Chat ve Sniffer Özel --- */
+        /* --- Chat ve Sniffer --- */
         .chat-box { height: 250px; background: #000; border-radius: 8px; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; border: 1px solid rgba(255,255,255,0.05);}
         .msg { padding: 8px 12px; border-radius: 8px; max-width: 80%; word-wrap: break-word; font-size: 13px;}
         .msg.me { background: #3b82f6; align-self: flex-end; border-bottom-right-radius: 0;}
@@ -142,7 +141,6 @@
         const c = document.getElementById('toast-container');
         const t = document.createElement('div'); t.className = 'toast'; t.innerText = msg;
         
-        // Hata mesajıysa kenarlığı kırmızı yap
         if(msg.includes("⚠️")) t.style.borderLeftColor = "#ef4444";
         
         c.appendChild(t); 
@@ -160,7 +158,7 @@
     }
 
     // ==========================================
-    // BÖLÜM 1: SUNUCU TABANLI ŞİFRELEME (TAB 1)
+    // BÖLÜM 1: SUNUCU TABANLI ŞİFRELEME
     // ==========================================
     let currentPublicKey = null; let currentPrivateKey = null;
 
@@ -272,10 +270,10 @@
     }
 
 // ==========================================
-    // BÖLÜM 2: E2EE CANLI SOHBET & AĞ (TAB 2)
+    // BÖLÜM 2: E2EE CANLI SOHBET & AĞ
     // ==========================================
     
-    // JS Tabanlı Kripto Motoru (16-Bit UTF-16 Destekli)
+    // JS Tabanlı Kripto Motoru 
     function egcdJS(a, b) { if(a===0) return [b,0,1]; let [g,y,x]=egcdJS(b%a, a); return [g, x-Math.floor(b/a)*y, y]; }
     function modInverseJS(a, m) { let [g,x,y]=egcdJS(a,m); return ((x%m)+m)%m; }
     
@@ -307,7 +305,7 @@
     const myE2EKeys = generateKeyPairJS();
     
     let targetE2EPublicKey = null;
-    let targetE2EUsername = null; // YENİ: Paketin kimin için olduğunu bilmemiz lazım
+    let targetE2EUsername = null; 
     let knownPeers = new Set(); 
 
     function logSniffer(t) { 
@@ -342,8 +340,7 @@
         const cipher = encryptJS(t, targetE2EPublicKey);
         
         logSniffer(`<span style="color:#ef4444">[TCP YÜKÜ (GİDEN)]</span> ${cipher.slice(0,5).join(',')}...`);
-        
-        // YENİ: Paketin içine 'target' etiketini de koyuyoruz
+    
         socket.emit('send_encrypted_message', { 
             sender: myName, 
             target: targetE2EUsername, 
@@ -355,7 +352,7 @@
     }
 
     socket.on('receive_encrypted_message', (data) => {
-        // YENİ GÜVENLİK DUVARI: Mesaj bana gelmediyse (başka sekmeye gittiyse) sessizce yoksay!
+        
         if (data.target && data.target !== myName) return;
 
         logSniffer(`<span style="color:#ef4444">[TCP YÜKÜ (GELEN)]</span> ${data.ciphertext.slice(0,5).join(',')}...`);
