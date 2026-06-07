@@ -1,4 +1,4 @@
-# 🛡️ Siber Güvenlik Süiti: Merkle-Hellman & E2EE Ağ Tüneli
+# 🛡️ Siber Güvenlik : Merkle-Hellman & E2EE Ağ Tüneli
 
 Bu proje, asimetrik şifreleme algoritmalarının hem **sunucu tabanlı (Cloud)** dosya şifrelemesinde hem de **istemci tabanlı (Client-Side)** Uçtan Uca Şifreli (E2EE) anlık ağ iletişiminde nasıl kullanılacağını uygulamalı olarak gösteren kapsamlı bir siber güvenlik süitidir.
 
@@ -63,6 +63,3 @@ python app.py
 Tarayıcınızı açın ve http://127.0.0.1:5000 adresine gidin.
 
 E2EE Ağını (Modül 2) test etmek için: Tarayıcınızda iki farklı sekme veya pencere açıp ekranı ikiye bölün. Sekmelerin otomatik olarak "El Sıkışma (Handshake)" yaptığını göreceksiniz. Birinden yazdığınız mesaj, ağ üzerinden şifreli rakamlar olarak geçer ve diğerinde çözülür.
-
-👨‍💻 Geliştirici Notu
-Bu proje, "Ağ Güvenliği" ve "Uygulamalı Kriptografi" prensiplerinin teoriden pratiğe nasıl döküleceğini göstermek amacıyla bir bitirme projesi / teknik laboratuvar çalışması olarak tasarlanmıştır. Güvenlik önlemleri eğitim amaçlıdır, ticari ortamlarda hazır endüstri standardı kütüphanelerin (AES, RSA, ECC) kullanılması önerilir.
